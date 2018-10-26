@@ -801,7 +801,7 @@ function handlePoolMessage(jsonData, hostname){
     } else {
         if (jsonData.error !== null){
             console.error(`${global.threadName}Error response from pool ${pool.hostname}: ${JSON.stringify(jsonData.error)}`);
-            activePools[hostname].disable();
+            if ((jsonData.error instanceof Object) && (typeof jsonData.error.message === 'string') && jsonData.error.message.includes("Unauthenticated")) activePools[hostname].disable();
             return;
         }
         let sendLog = pool.sendLog[jsonData.id];
