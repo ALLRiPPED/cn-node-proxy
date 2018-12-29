@@ -1,17 +1,18 @@
 {
   "pools": [
     {
-      "hostname": "gulf.moneroocean.stream",
-      "port": 10032,
+      "hostname": "pool.venueproject.network",
+      "port": 5555,
       "ssl": false,
       "allowSelfSignedSSL": false,
       "share": 100,
-      "username": "44qJYxdbuqSKarYnDSXB6KLbsH4yR65vpJe3ELLDii9i4ZgKpgQXZYR4AMJxBJbfbKZGWUxZU42QyZSsP4AyZZMbJBCrWr1",
+      "username": "VENue2o3Fd7Q25zyYZdRtMDtSdS8FLGM5a15h9Pt8xGWEtAahchsWNSJfyM2Qd2cUsAmL8xtLb9WhCDjm1gx2Wj9EJNaWXQYBAd",
       "password": "proxy",
       "keepAlive": true,
-      "algo": "cn/2",
+      "algo": [ "cn/1", "cn/2" ],
       "blob_type": "cryptonote",
-      "default": true
+      "default": true,
+      "coin": "cn1"
     },
     {
       "hostname": "pool.supportxmr.com",
@@ -19,12 +20,13 @@
       "ssl": false,
       "allowSelfSignedSSL": false,
       "share": 0,
-      "username": "44qJYxdbuqSKarYnDSXB6KLbsH4yR65vpJe3ELLDii9i4ZgKpgQXZYR4AMJxBJbfbKZGWUxZU42QyZSsP4AyZZMbJBCrWr1",
+      "username": "48HjS1EAUp54tgTeugxywuWtJCZ3atCJwHUgZyPjsySjJgjp5R6iuQN3PFFWtnTVaj6SaCm1RzvtYG23QM37mMswFCLFnX4",
       "password": "proxy",
       "keepAlive": true,
       "algo": "cn/2",
       "blob_type": "cryptonote",
-      "default": false
+      "default": false,
+      "coin": "xmr"
     }
   ],
   "listeningPorts": [
@@ -32,16 +34,25 @@
       "port": 8080,
       "ssl": false,
       "diff": 5000
+      "coin": "cn1"
     },
     {
-      "port": 8443,
-      "ssl": true,
-      "diff": 5000
+      "port": 8888,
+      "ssl": false,
+      "diff": 10000
+      "coin": "cn1"
     },
     {
       "port": 3333,
       "ssl": false,
+      "diff": 5000
+      "coin": "xmr"
+    },
+    {
+      "port": 5555,
+      "ssl": false,
       "diff": 10000
+      "coin": "xmr"
     }
   ],
   "bindAddress": "0.0.0.0",
@@ -52,7 +63,7 @@
     "controlFile": "accessControl.json"
   },
   "httpEnable": false,
-  "httpAddress": "127.0.0.1",
+  "httpAddress": "0.0.0.0",
   "httpPort": "8081",
   "httpUser": "",
   "httpPass": "",
@@ -63,6 +74,12 @@
   "theme": "light",
   "coinSettings": {
     "xmr":{
+      "minDiff": 100,
+      "maxDiff": 300000,
+      "shareTargetTime": 15
+    },
+    "cn1":
+    {
       "minDiff": 100,
       "maxDiff": 300000,
       "shareTargetTime": 15

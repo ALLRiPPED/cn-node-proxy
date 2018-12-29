@@ -1,4 +1,6 @@
-# xmr-node-proxy
+# cn-node-proxy
+
+This is a fork of Snipa22's [xmr-node-proxy](https://github.com/Snipa22/xmr-node-proxy) reworked for [ARHASH.xyz](https://arhash.xyz)
 
 :warning: **[Monero will change PoW algorithm on October 18] Please update this proxy to the latest version and please put "algo": "cn/2" into your pool section of config.json** :warning:
 
@@ -15,11 +17,11 @@ Supports all known cryptonight/heavy/light coins:
 
 Based on a clean Ubuntu 16.04 LTS minimal install
 
-## Switching from other xmr-node-proxy repository
+## Switching from other cn-node-proxy repository
 
 ```bash
-cd xmr-node-proxy
-git remote set-url origin https://github.com/ALLRiPPED/xmr-node-proxy.git && git pull -X theirs --no-edit && npm update
+cd cn-node-proxy
+git remote set-url origin https://github.com/ALLRiPPED/cn-node-proxy.git && git pull -X theirs --no-edit && npm update
 ```
 
 ## Deployment via Installer on Linux
@@ -37,10 +39,10 @@ passwd nodeproxy
 echo "nodeproxy ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 ```
 
-3. Log in as the **NON-ROOT USER** you just created and run the [deploy script](https://raw.githubusercontent.com/ALLRiPPED/xmr-node-proxy/master/install.sh).  This is very important!  This script will install the proxy to whatever user it's running under!
+3. Log in as the **NON-ROOT USER** you just created and run the [deploy script](https://raw.githubusercontent.com/ALLRiPPED/cn-node-proxy/master/install.sh).  This is very important!  This script will install the proxy to whatever user it's running under!
 
 ```bash
-curl -L https://raw.githubusercontent.com/ALLRiPPED/xmr-node-proxy/master/install.sh | bash
+curl -L https://raw.githubusercontent.com/ALLRiPPED/cn-node-proxy/master/install.sh | bash
 ```
 
 3. Once it's complete, copy `config_example.json` to `config.json` and edit as desired.
@@ -48,7 +50,7 @@ curl -L https://raw.githubusercontent.com/ALLRiPPED/xmr-node-proxy/master/instal
 8. Once you're happy with the settings, go ahead and start all the proxy daemon, commands follow.
 
 ```shell
-cd ~/xmr-node-proxy/
+cd ~/cn-node-proxy/
 pm2 start proxy.js --name=proxy --log-date-format="YYYY-MM-DD HH:mm:ss:SSS Z"
 pm2 save
 ```
@@ -64,10 +66,10 @@ or using the pm2 monitor
 pm2 monit
 ```
 
-## Updating xmr-node-proxy
+## Updating cn-node-proxy
 
 ```bash
-cd xmr-node-proxy
+cd cn-node-proxy
 ./update.sh
 ```
 
@@ -75,51 +77,51 @@ cd xmr-node-proxy
 
 1. Install and run [Docker for Windows](https://docs.docker.com/docker-for-windows/install/) with Linux containers mode.
 
-2. Get xmr-node-proxy sources by downloading and unpacking the latest [xmr-node-proxy](https://github.com/ALLRiPPED/xmr-node-proxy/archive/master.zip)
-archive to xmr-node-proxy-master directory.
+2. Get cn-node-proxy sources by downloading and unpacking the latest [cn-node-proxy](https://github.com/ALLRiPPED/cn-node-proxy/archive/master.zip)
+archive to cn-node-proxy-master directory.
 
-3. Got to xmr-node-proxy-master directory in Windows "Command Prompt" and build xmr-node-proxy Docker image:
+3. Got to cn-node-proxy-master directory in Windows "Command Prompt" and build cn-node-proxy Docker image:
 
 ```
-docker build . -t xmr-node-proxy
+docker build . -t cn-node-proxy
 ```
 
 4. Copy config_example.json to config.json and edit config.json file as desired (do not forget to update default XMR wallet).
 
-5. Create xnp Docker contained based on xmr-node-proxy image (make sure to update port numbers if you changed them in config.json):
+5. Create xnp Docker contained based on cn-node-proxy image (make sure to update port numbers if you changed them in config.json):
 
 ```
-docker create -p 3333:3333 -p 8080:8080 -p 8443:8443 --name xnp xmr-node-proxy
+docker create -p 3333:3333 -p 8080:8080 -p 8443:8443 --name cn cn-node-proxy
 ```
 
-6. Copy your modified config.json to xnp Docker container:
+6. Copy your modified config.json to cn Docker container:
 
 ```
-docker cp config.json xnp:/xmr-node-proxy
+docker cp config.json cn:/cn-node-proxy
 ```
 
-7. Run xnp Docker container (or attach to already running one):
+7. Run cn Docker container (or attach to already running one):
 
 ```
-docker start --attach xnp
+docker start --attach cn
 ```
 
 8. Stop xnp Docker container (to start it again with update):
 
 ```
-docker stop xnp
+docker stop cn
 ```
 
-9. Delete xnp Docker container (if you want to create it again with different ports):
+9. Delete cn Docker container (if you want to create it again with different ports):
 
 ```
-docker rm xnp
+docker rm cn
 ```
 
-10. Delete xmr-node-proxy Docker image (if you no longer need proxy):
+10. Delete cn-node-proxy Docker image (if you no longer need proxy):
 
 ```
-docker rmi xmr-node-proxy
+docker rmi cn-node-proxy
 ```
 
 
@@ -152,8 +154,8 @@ for all initial miner connections via proxy.
 
 VMs with 512Mb or less RAM will need some swap space in order to compile the C extensions for node.
 Bignum and the CN libraries can chew through some serious memory during compile.
-In regards to this here is guide for T2.Micro servers: [Setup of xmr-node-proxy on free tier AWS t2.micro instance](http://moneroocean.blogspot.com/2017/10/setup-of-xmr-node-proxy-on-free-tier.html).
-There is also more generic proxy instalation guide: [Complete guide to install and configure xmr-node-proxy on a Ubuntu 16.04 VPS](https://tjosm.com/7689/install-xmr-node-proxy-vps/)
+In regards to this here is guide for T2.Micro servers: [Setup of cn-node-proxy on free tier AWS t2.micro instance](http://moneroocean.blogspot.com/2017/10/setup-of-xmr-node-proxy-on-free-tier.html).
+There is also more generic proxy instalation guide: [Complete guide to install and configure cn-node-proxy on a Ubuntu 16.04 VPS](https://tjosm.com/7689/install-xmr-node-proxy-vps/)
 
 If not running on an Ubuntu 16.04 system, please make sure your kernel is at least 3.2 or higher, as older versions will not work for this.
 
@@ -170,7 +172,7 @@ In testing, we've seen AWS t2.micro instances take upwards of 2k connections, wh
 
 ## Configuration Guidelines
 
-Please check the [wiki](https://github.com/ALLRiPPED/xmr-node-proxy/wiki/config_review) for information on configuration
+Please check the [wiki](https://github.com/Snipa22/xmr-node-proxy/wiki/config_review) for information on configuration
 
 Developer Donations
 ===================
