@@ -14,6 +14,20 @@ const PROXY_VERSION = "0.3.4";
 const DEFAULT_ALGO      = [ "cn/2" ];
 const DEFAULT_ALGO_PERF = { "cn": 1, "cn/msr": 1.9 };
 
+/*
+ General file design/where to find things.
+
+ Internal Variables
+ IPC Registry
+ Combined Functions
+ Pool Definition
+ Master Functions
+ Miner Definition
+ Slave Functions
+ API Calls (Master-Only)
+ System Init
+
+ */
 let debug = {
     pool: require('debug')('pool'),
     diff: require('debug')('diff'),
@@ -145,6 +159,30 @@ function readConfig() {
 
 // Pool Definition
 function Pool(poolData){
+    /*
+    Pool data is the following:
+     {
+     "hostname": "pool.supportxmr.com",
+     "port": 7777,
+     "ssl": false,
+     "share": 80,
+     "username": "",
+     "password": "",
+     "keepAlive": true,
+     "coin": "xmr"
+     }
+     Client Data format:
+     {
+        "method":"submit",
+        "params":{
+            "id":"12e168f2-db42-4eea-b56a-f1e7d57f94c9",
+            "job_id":"/4FIQEI/Qq++EzzH1e03oTrWF5Ed",
+            "nonce":"9e008000",
+            "result":"4eee0b966418fdc3ec1a684322715e65765554f11ff8f7fed3f75ac45ef20300"
+        },
+        "id":1
+     }
+     */
     this.hostname = poolData.hostname;
     this.port = poolData.port;
     this.ssl = poolData.ssl;
@@ -300,6 +338,13 @@ function Pool(poolData){
 }
 
 // Master Functions
+/*
+The master performs the following tasks:
+1. Serve all API calls.
+2. Distribute appropriately modified block template bases to all pool servers.
+3. Handle all to/from the various pool servers.
+4. Manage and suggest miner changes in order to achieve correct h/s balancing between the various systems.
+ */
 function connectPools(){
     global.config.pools.forEach(function (poolData) {
         if (!poolData.coin) poolData.coin = "xmr";
@@ -336,6 +381,17 @@ function connectPools(){
 let poolStates = {};
 
 function balanceWorkers(){
+    /*
+    This function deals with handling how the pool deals with getting traffic balanced to the various pools.
+    Step 1: Enumerate all workers (Child servers), and their miners/coins into known states
+    Step 1: Enumerate all miners, move their H/S into a known state tagged to the coins and pools
+    Step 2: Enumerate all pools, verify the percentages as fractions of 100.
+    Step 3: Determine if we're sharing with the developers (Woohoo!  You're the best if you do!)
+    Step 4: Process the state information to determine splits/moves.
+    Step 5: Notify child processes of other pools to send traffic to if needed.
+
+    The Master, as the known state holder of all information, deals with handling this data.
+     */
     let minerStates = {};
     poolStates = {};
     for (let poolName in activePools){
@@ -367,6 +423,30 @@ function balanceWorkers(){
             }
         }
     }
+    /*
+    poolStates now contains an object that looks approximately like:
+    poolStates = {
+        'xmr':
+            {
+                'mine.xmrpool.net': {
+                    'miners': {},
+                    'hashrate': 0,
+                    'percentage': 20,
+                    'devPool': false,
+                    'amtChange': 0
+                 },
+                 'donations.xmrpool.net': {
+                     'miners': {},
+                     'hashrate': 0,
+                     'percentage': 0,
+                     'devPool': true,
+                     'amtChange': 0
+                 },
+                 'devPool': 'donations.xmrpool.net',
+                 'totalPercentage': 20
+            }
+    }
+     */
     for (let coin in poolStates){
         if(poolStates.hasOwnProperty(coin)){
             if (poolStates[coin].totalPercentage !== 100){
@@ -398,6 +478,27 @@ function balanceWorkers(){
             delete(poolStates[coin].activePoolCount);
         }
     }
+    /*
+     poolStates now contains an object that looks approximately like:
+     poolStates = {
+         'xmr':
+         {
+             'mine.xmrpool.net': {
+                 'miners': {},
+                 'hashrate': 0,
+                 'percentage': 100,
+                 'devPool': false
+             },
+             'donations.xmrpool.net': {
+                 'miners': {},
+                 'hashrate': 0,
+                 'percentage': 0,
+                 'devPool': true
+             },
+             'devPool': 'donations.xmrpool.net',
+         }
+     }
+     */
     for (let workerID in activeWorkers){
         if (activeWorkers.hasOwnProperty(workerID)){
             for (let minerID in activeWorkers[workerID]){
@@ -418,6 +519,11 @@ function balanceWorkers(){
             }
         }
     }
+    /*
+    poolStates now contains the hashrate per pool.  This can be compared against minerStates/hashRate to determine
+    the approximate hashrate that should be moved between pools once the general hashes/second per pool/worker
+    is determined.
+     */
 
     for (let coin in poolStates){
         if (poolStates.hasOwnProperty(coin) && minerStates.hasOwnProperty(coin)){
@@ -968,6 +1074,9 @@ function isInAccessControl(username, password) {
 }
 
 function handleMinerData(method, params, ip, portData, sendReply, pushMessage, minerSocket) {
+    /*
+    Deals with handling the data from miners in a sane-ish fashion.
+     */
     let miner = activeMiners[params.id];
     // Check for ban here, so preconnected attackers can't continue to screw you
     if (ip in bans) {
@@ -1257,6 +1366,11 @@ function activateHTTP() {
 }
 
 function activatePorts() {
+    /*
+     Reads the current open ports, and then activates any that aren't active yet
+     { "port": 80, "ssl": false, "diff": 5000 }
+     and binds a listener to it.
+     */
     async.each(global.config.listeningPorts, function (portData) {
         if (activePorts.indexOf(portData.port) !== -1) {
             return;
@@ -1424,7 +1538,7 @@ function checkActivePools() {
 // System Init
 
 if (cluster.isMaster) {
-    console.log("Cn-Node-Proxy (XNP) v" + PROXY_VERSION);
+    console.log("Cryptonight-Node-Proxy (CNP) v" + PROXY_VERSION);
     let numWorkers;
     try {
         let argv = require('minimist')(process.argv.slice(2));
@@ -1464,6 +1578,10 @@ if (cluster.isMaster) {
         activateHTTP();
     }
 } else {
+    /*
+    setInterval(checkAliveMiners, 30000);
+    setInterval(retargetMiners, global.config.pool.retargetTime * 1000);
+    */
     process.on('message', slaveMessageHandler);
     global.config.pools.forEach(function(poolData){
         if (!poolData.coin) poolData.coin = "xmr";
