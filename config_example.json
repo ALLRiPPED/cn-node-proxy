@@ -1,18 +1,17 @@
 {
   "pools": [
     {
-      "hostname": "pool.venueproject.network",
-      "port": 5555,
+      "hostname": "gulf.moneroocean.stream",
+      "port": 10032,
       "ssl": false,
       "allowSelfSignedSSL": false,
       "share": 100,
-      "username": "VENue2o3Fd7Q25zyYZdRtMDtSdS8FLGM5a15h9Pt8xGWEtAahchsWNSJfyM2Qd2cUsAmL8xtLb9WhCDjm1gx2Wj9EJNaWXQYBAd",
+      "username": "44qJYxdbuqSKarYnDSXB6KLbsH4yR65vpJe3ELLDii9i4ZgKpgQXZYR4AMJxBJbfbKZGWUxZU42QyZSsP4AyZZMbJBCrWr1",
       "password": "proxy",
       "keepAlive": true,
-      "algo": [ "cn/1", "cn/2" ],
+      "algo": "cn/2",
       "blob_type": "cryptonote",
-      "default": true,
-      "coin": "cn1"
+      "default": true
     },
     {
       "hostname": "pool.supportxmr.com",
@@ -20,13 +19,25 @@
       "ssl": false,
       "allowSelfSignedSSL": false,
       "share": 0,
-      "username": "48HjS1EAUp54tgTeugxywuWtJCZ3atCJwHUgZyPjsySjJgjp5R6iuQN3PFFWtnTVaj6SaCm1RzvtYG23QM37mMswFCLFnX4",
+      "username": "44qJYxdbuqSKarYnDSXB6KLbsH4yR65vpJe3ELLDii9i4ZgKpgQXZYR4AMJxBJbfbKZGWUxZU42QyZSsP4AyZZMbJBCrWr1",
       "password": "proxy",
       "keepAlive": true,
       "algo": "cn/2",
       "blob_type": "cryptonote",
-      "default": false,
-      "coin": "xmr"
+      "default": false
+    },
+    {
+      "hostname": "mine.c3pool.com",
+      "port": 23333,
+      "ssl": false,
+      "allowSelfSignedSSL": false,
+      "share": 0,
+      "username": "44qJYxdbuqSKarYnDSXB6KLbsH4yR65vpJe3ELLDii9i4ZgKpgQXZYR4AMJxBJbfbKZGWUxZU42QyZSsP4AyZZMbJBCrWr1",
+      "password": "proxy",
+      "keepAlive": true,
+      "algo": "cn/2",
+      "blob_type": "cryptonote",
+      "default": false
     }
   ],
   "listeningPorts": [
@@ -34,25 +45,16 @@
       "port": 8080,
       "ssl": false,
       "diff": 5000
-      "coin": "cn1"
     },
     {
-      "port": 8888,
-      "ssl": false,
-      "diff": 10000
-      "coin": "cn1"
+      "port": 8443,
+      "ssl": true,
+      "diff": 5000
     },
     {
       "port": 3333,
       "ssl": false,
-      "diff": 5000
-      "coin": "xmr"
-    },
-    {
-      "port": 5555,
-      "ssl": false,
       "diff": 10000
-      "coin": "xmr"
     }
   ],
   "bindAddress": "0.0.0.0",
@@ -63,7 +65,7 @@
     "controlFile": "accessControl.json"
   },
   "httpEnable": false,
-  "httpAddress": "0.0.0.0",
+  "httpAddress": "127.0.0.1",
   "httpPort": "8081",
   "httpUser": "",
   "httpPass": "",
@@ -74,12 +76,6 @@
   "theme": "light",
   "coinSettings": {
     "xmr":{
-      "minDiff": 100,
-      "maxDiff": 300000,
-      "shareTargetTime": 15
-    },
-    "cn1":
-    {
       "minDiff": 100,
       "maxDiff": 300000,
       "shareTargetTime": 15
