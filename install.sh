@@ -18,12 +18,12 @@ else
   sudo DEBIAN_FRONTEND=noninteractive apt-get -y install git curl make g++ python-virtualenv libboost-dev libboost-system-dev libboost-date-time-dev
 fi
 cd ~
-git clone https://github.com/MoneroOcean/xmr-node-proxy
+git clone https://github.com/ALLRiPPED/cn-node-proxy
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh | bash
 source ~/.nvm/nvm.sh
 nvm install v8.11.3
 nvm alias default v8.11.3
-cd ~/xmr-node-proxy
+cd ~/cn-node-proxy
 npm install || exit 1
 npm install -g pm2
 cp config_example.json config.json
