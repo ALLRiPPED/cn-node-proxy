@@ -26,7 +26,6 @@ nvm alias default v8.11.3
 cd ~/cn-node-proxy
 npm install || exit 1
 npm install -g pm2
-cp config_example.json config.json
 openssl req -subj "/C=IT/ST=Pool/L=Daemon/O=Mining Pool/CN=mining.proxy" -newkey rsa:2048 -nodes -keyout cert.key -x509 -out cert.pem -days 36500
 cd ~
 pm2 status
